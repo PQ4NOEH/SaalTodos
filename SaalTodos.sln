@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saal.Todos.UI", "Saal.Todos.UI\Saal.Todos.UI.csproj", "{EDEDB543-0322-4801-BF6A-91D652EE3845}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saal.Todos.UI", "Saal.Todos.UI\Saal.Todos.UI.csproj", "{EDEDB543-0322-4801-BF6A-91D652EE3845}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saal.Todos.Services", "Saal.Todos.Services\Saal.Todos.Services.csproj", "{2068933C-9507-4FC9-B511-3D03F64041CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saal.Todos.Services", "Saal.Todos.Services\Saal.Todos.Services.csproj", "{2068933C-9507-4FC9-B511-3D03F64041CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saal.Todos.Repositories", "Saal.Todos.Repositories\Saal.Todos.Repositories.csproj", "{5379B910-5773-473D-8EA4-C715D24EAEC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saal.Todos.Repositories", "Saal.Todos.Repositories\Saal.Todos.Repositories.csproj", "{5379B910-5773-473D-8EA4-C715D24EAEC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saal.Todos.Contracts", "Saal.Todos.Contracts\Saal.Todos.Contracts.csproj", "{F98AE4C6-06F5-4608-9064-80353904328B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saal.Todos.Contracts", "Saal.Todos.Contracts\Saal.Todos.Contracts.csproj", "{F98AE4C6-06F5-4608-9064-80353904328B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saal.Todos.Repositories.Tests", "Saal.Todos.Repositories.Tests\Saal.Todos.Repositories.Tests.csproj", "{BF117BC3-3D99-45A1-9348-385DBA7CFA66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saal.Todos.Repositories.Tests", "Saal.Todos.Repositories.Tests\Saal.Todos.Repositories.Tests.csproj", "{BF117BC3-3D99-45A1-9348-385DBA7CFA66}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{E096D3E9-55F7-446A-B2A4-679D5FB1F293}"
 EndProject
@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{C39F72EE-56DB-45D3-ACCF-D514B18D36DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saal.Todos.Services.Tests", "Saal.Todos.Services.Tests\Saal.Todos.Services.Tests.csproj", "{A82D5789-7383-47B7-99CC-0AFCF806C906}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saal.Todos.Services.Tests", "Saal.Todos.Services.Tests\Saal.Todos.Services.Tests.csproj", "{A82D5789-7383-47B7-99CC-0AFCF806C906}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
