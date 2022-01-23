@@ -3,7 +3,7 @@ name: Deploy to Heroku
 on:
   push:
     branches:
-    - master
+    - main
 
 env:
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
