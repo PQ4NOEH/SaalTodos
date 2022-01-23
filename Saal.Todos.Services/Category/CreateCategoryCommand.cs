@@ -9,6 +9,5 @@ namespace Saal.Todos.Services.Category
     {
         public string CategoryName { get; set; }   
     }
-
     
 }

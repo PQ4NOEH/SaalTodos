@@ -48,9 +48,17 @@ namespace Saal.Todos.Services.Core
         {
             if (string.IsNullOrWhiteSpace(reason)) throw new ArgumentException(nameof(reason));
             Reason = reason;
+            AggregateNotFound = false;
+        }
+
+        public CommandRejectedReason()
+        {
+            AggregateNotFound = true;
         }
 
         public string Reason { get; }
+
+        public bool AggregateNotFound { get; } 
     }
 
 }

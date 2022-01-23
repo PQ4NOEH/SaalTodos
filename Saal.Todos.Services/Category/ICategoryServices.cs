@@ -10,8 +10,14 @@ namespace Saal.Todos.Services.Category
 {
     public interface ICategoryService
         : ICommandHandlerAsync<CreateCategoryCommand, CommandResult<Dto.Category>>
+        , ICommandHandlerAsync<ChangeCategoryCommand, CommandResult>
+        , ICommandHandlerAsync<DeleteCategoryCommand, CommandResult>
+        , ICommandHandlerAsync<CreateTodoCommand, CommandResult<Dto.Todo>>
+        , ICommandHandlerAsync<ChangeTodoCommand, CommandResult>
+        , ICommandHandlerAsync<DeleteTodoCommand, CommandResult>
     {
         Task<IPaginatedResult<Dto.Category>> Fetch(int pageSize, int pageNumber);
+        Task<Dto.Category> FetchById(int categoryId);
     }
 
     /// <summary>
@@ -30,7 +36,13 @@ namespace Saal.Todos.Services.Category
             _categoryValidator = categoryValidator ?? throw new ArgumentNullException(nameof(categoryValidator));
         }
 
-        public async Task<CommandResult<Dto.Category>> Handle(CreateCategoryCommand command)
+        /// <summary>
+        /// Creates a new Category
+        /// </summary>
+        /// <param name="command">Command data</param>
+        /// <returns>The new Category</returns>
+        /// <exception cref="ArgumentNullException">When the command parameter is null throws an exception</exception>
+        public async Task<CommandResult<Dto.Category>> Handle([NotNull]CreateCategoryCommand command)
         {
             if (command == null) throw new ArgumentNullException(nameof(command));
             var newCategory = new Dto.Category()
@@ -40,7 +52,6 @@ namespace Saal.Todos.Services.Category
             var validationResult = _categoryValidator.Validate(newCategory);
             if(validationResult.IsValid)
             {
-                throw new NotImplementedException();
                 newCategory.Id = await _categoryRepository.Insert(newCategory);
                 return new CommandResult<Dto.Category>(newCategory);
             }
@@ -52,9 +63,98 @@ namespace Saal.Todos.Services.Category
             
         }
 
+        /// <summary>
+        /// Changes category properties except todos
+        /// </summary>
+        /// <param name="command">Command data</param>
+        /// <returns>Execution result</returns>
+        /// <exception cref="ArgumentNullException">When the command parameter is null throws an exception</exception>
+        public async Task<CommandResult> Handle([NotNull]ChangeCategoryCommand command)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+            var category = await _categoryRepository.FetchById(command.CategoryId);
+            if(category == null)//if no category is found rejects the command execution to inform client
+            {
+                var rejectedReason = new CommandRejectedReason();
+                return new CommandResult(rejectedReason);
+            }
+            else
+            {
+                category.Name = command.CategoryName;
+                var validationResult = _categoryValidator.Validate(category);
+                if (validationResult.IsValid)
+                {
+                    await _categoryRepository.Update(category);
+                    return new CommandResult();
+                }
+                else
+                {
+                    var rejectedReason = new CommandRejectedReason(validationResult.ErrorsString);
+                    return new CommandResult(rejectedReason);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deletes am aggregate
+        /// </summary>
+        /// <param name="command">Command data</param>
+        /// <returns>Execution result</returns>
+        /// <exception cref="ArgumentNullException">When the command parameter is null throws an exception</exception>
+        public async Task<CommandResult> Handle([NotNull] DeleteCategoryCommand command)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+            var affectedRecords = await _categoryRepository.Remove(command.CategoryId);
+            if (affectedRecords)//if no category is found rejects the command execution to inform client
+            {
+                var rejectedReason = new CommandRejectedReason();
+                return new CommandResult(rejectedReason);
+            }
+            else
+            {
+                return new CommandResult();
+            }
+        }
+
+        /// <summary>
+        /// Fetches a page of categories
+        /// </summary>
+        /// <param name="pageSize">The number of elements per page</param>
+        /// <param name="pageNumber">The page</param>
+        /// <returns></returns>
         public Task<IPaginatedResult<Dto.Category>> Fetch(int pageSize, int pageNumber)
         {
+            pageSize = pageSize > 50 ? 50 : pageSize;
             return _categoryRepository.Fetch(pageSize, pageNumber);
+        }
+
+        /// <summary>
+        /// Fetches a category
+        /// </summary>
+        /// <param name="categoryId">The id of the category</param>
+        /// <returns>The matched category or null</returns>
+        public Task<Dto.Category> FetchById(int categoryId)
+        {
+            return _categoryRepository.FetchById(categoryId);
+        }
+
+
+        public Task<CommandResult<Dto.Todo>> Handle([NotNull] CreateTodoCommand command)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+            throw new NotImplementedException();
+        }
+
+        public Task<CommandResult> Handle([NotNull] ChangeTodoCommand command)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+            throw new NotImplementedException();
+        }
+
+        public Task<CommandResult> Handle([NotNull] DeleteTodoCommand command)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+            throw new NotImplementedException();
         }
     }
 }
