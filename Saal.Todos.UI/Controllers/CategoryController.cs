@@ -69,6 +69,44 @@ namespace Saal.Todos.UI.Controllers
             var commandresult = await _categoryService.Handle(command);
             return this.GetActionResult(commandresult);
         }
+
+
+        //////////////////////Todo subresource////////////////////////////////
+        // POST api/<CategoryController/1/todo
+        [HttpPost("{categoryId}/todo")]
+        public async Task<IActionResult> Post(int categoryId, [FromBody] CreateTodoCommand command)
+        {
+            _logger.LogInformation($"requested creation of a new todo in category {categoryId}");
+            command.CategoryId = categoryId;
+            var commandresult = await _categoryService.Handle(command);
+            return this.GetActionResult(commandresult);
+        }
+
+        // POST api/<CategoryController/1/todo
+        [HttpPut("{categoryId}/todo/{todoId}")]
+        public async Task<IActionResult> Put(int categoryId, int todoId, [FromBody] ChangeTodoCommand command)
+        {
+            _logger.LogInformation($"requested change of a todo {todoId} in category {categoryId}");
+            command.CurrentCategoryId= categoryId;
+            command.Todo.Id = todoId;
+            var commandresult = await _categoryService.Handle(command);
+            return this.GetActionResult(commandresult);
+        }
+
+        // Delete api/<CategoryController/1/todo/1
+        [HttpDelete("{categoryId}/todo/{todoId}")]
+        public async Task<IActionResult> Delete(int categoryId, int todoId)
+        {
+            _logger.LogInformation($"requested delete todo {todoId} in category {categoryId}");
+            var command = new DeleteTodoCommand
+            {
+                CategoryId = categoryId,
+                TodoId = todoId
+            };
+            var commandresult = await _categoryService.Handle(command);
+            return this.GetActionResult(commandresult);
+        }
+
     }
 
     

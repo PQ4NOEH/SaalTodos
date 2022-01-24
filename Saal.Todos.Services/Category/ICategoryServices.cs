@@ -27,13 +27,16 @@ namespace Saal.Todos.Services.Category
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IServiceValidator<Dto.Category> _categoryValidator;
+        private readonly IServiceValidator<Dto.Todo> _todoValidator;
 
         public CategoryService(
             [NotNull] ICategoryRepository categoryRepository,
-            [NotNull] IServiceValidator<Dto.Category> categoryValidator)
+            [NotNull] IServiceValidator<Dto.Category> categoryValidator,
+            [NotNull] IServiceValidator<Dto.Todo> todoValidator)
         {
             _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
             _categoryValidator = categoryValidator ?? throw new ArgumentNullException(nameof(categoryValidator));
+            _todoValidator = todoValidator ?? throw new ArgumentNullException(nameof(todoValidator));
         }
 
         /// <summary>
@@ -139,22 +142,71 @@ namespace Saal.Todos.Services.Category
         }
 
 
-        public Task<CommandResult<Dto.Todo>> Handle([NotNull] CreateTodoCommand command)
+        public async Task<CommandResult<Dto.Todo>> Handle([NotNull] CreateTodoCommand command)
         {
             if (command == null) throw new ArgumentNullException(nameof(command));
-            throw new NotImplementedException();
+            var category = await _categoryRepository.FetchById(command.CategoryId);
+            if (category == null)//if no category is found rejects the command execution to inform client
+            {
+                var rejectedReason = new CommandRejectedReason();
+                return new CommandResult<Dto.Todo>(rejectedReason);
+            }
+            else
+            {
+                var newTodo = new Dto.Todo
+                {
+                    Title = command.Title,
+                    DeadLine = command.DeadLine,
+                    Done = command.Done
+                };
+                var validationResult = _todoValidator.Validate(newTodo);
+                if (validationResult.IsValid)
+                {
+                    newTodo.Id = await _categoryRepository.InsertTodo(command.CategoryId, newTodo);
+                    return new CommandResult<Dto.Todo>(newTodo);
+                }
+                else
+                {
+                    var rejectedReason = new CommandRejectedReason(validationResult.ErrorsString);
+                    return new CommandResult<Dto.Todo>(rejectedReason);
+                }
+            }
         }
 
-        public Task<CommandResult> Handle([NotNull] ChangeTodoCommand command)
+        public async Task<CommandResult> Handle([NotNull] ChangeTodoCommand command)
         {
             if (command == null) throw new ArgumentNullException(nameof(command));
-            throw new NotImplementedException();
+            var category = await _categoryRepository.FetchById(command.CurrentCategoryId);
+            if (category == null)//if no category is found rejects the command execution to inform client
+            {
+                var rejectedReason = new CommandRejectedReason();
+                return new CommandResult(rejectedReason);
+            }
+            else
+            {
+                var validationResult = _todoValidator.Validate(command.Todo);
+                if (validationResult.IsValid)
+                {
+                    await _categoryRepository.UpdateTodo(command.CurrentCategoryId, command.NewCategoryId, command.Todo);
+                    return new CommandResult();
+                }
+                else
+                {
+                    var rejectedReason = new CommandRejectedReason(validationResult.ErrorsString);
+                    return new CommandResult(rejectedReason);
+                }
+            }
         }
 
-        public Task<CommandResult> Handle([NotNull] DeleteTodoCommand command)
+        public async Task<CommandResult> Handle([NotNull] DeleteTodoCommand command)
         {
             if (command == null) throw new ArgumentNullException(nameof(command));
-            throw new NotImplementedException();
+            var deleted = await _categoryRepository.RemoveTodo(command.CategoryId, command.TodoId);
+            return deleted
+                ? new CommandResult()
+                : new CommandResult(new CommandRejectedReason());
+
+
         }
     }
 }

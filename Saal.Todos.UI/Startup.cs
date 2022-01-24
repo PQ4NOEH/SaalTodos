@@ -41,6 +41,7 @@ namespace Saal.Todos.UI
 
             //Validators
             services.AddTransient<IServiceValidator<Dto.Category>, CategoryValidator>();
+            services.AddTransient<IServiceValidator<Dto.Todo>, TodoValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
